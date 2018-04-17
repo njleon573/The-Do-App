@@ -10,11 +10,17 @@ import UIKit
 
 class TheDoListViewController: UITableViewController {
     
+    let defaults = UserDefaults.standard
+    
     
     var itemArray = ["Buy Weed","Buy Molly","Buy Mushrooms","Buy Drugs"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let items = defaults.array(forKey: "ToDoListArray") as? [String] {
+            itemArray = items
+        }
         
     }
     //MARK - Add Button Functionality
@@ -24,6 +30,8 @@ class TheDoListViewController: UITableViewController {
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
             //What will happen when user clicks add button on Alert.
        self.itemArray.append(textField.text!)
+            self.defaults.setValue(self.itemArray, forKey: "ToDoListArray")
+            
             self.tableView.reloadData()
         }
         alert.addTextField { (alertTextField) in
