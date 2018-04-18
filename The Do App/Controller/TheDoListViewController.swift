@@ -13,24 +13,39 @@ class TheDoListViewController: UITableViewController {
     let defaults = UserDefaults.standard
     
     
-    var itemArray = ["Buy Weed","Buy Molly","Buy Mushrooms","Buy Drugs"]
+    var itemArray = [ToDoItem]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let items = defaults.array(forKey: "ToDoListArray") as? [String] {
-            itemArray = items
-        }
+        let item = ToDoItem()
+        item.text = "Buy Molly"
+        itemArray.append(item)
         
-    }
+        let item2 = ToDoItem()
+        item2.text = "Buy Weed"
+        itemArray.append(item2)
+
+        let item3 = ToDoItem()
+        item3.text = "Buy Mushrooms"
+        itemArray.append(item3)
+        
+        
+        if let items = defaults.array(forKey: "ToDoListArray") as? [ToDoItem] {
+            itemArray = items
+        } }
+    
     //MARK - Add Button Functionality
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         var textField = UITextField()
         let alert = UIAlertController(title: "Add New The Do Item", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
             //What will happen when user clicks add button on Alert.
-       self.itemArray.append(textField.text!)
-            self.defaults.setValue(self.itemArray, forKey: "ToDoListArray")
+            let newItem = ToDoItem()
+            newItem.text = textField.text!
+            
+       self.itemArray.append(newItem)
+            self.defaults.setValue(self.itemArray, forKey: "ToDoListArray") as! [ToDoItem]
             
             self.tableView.reloadData()
         }
@@ -52,7 +67,12 @@ class TheDoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell : UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "TheDoItemCell")!
         
-        cell.textLabel?.text = itemArray[indexPath.row]
+        let item = itemArray[indexPath.row]
+        
+        cell.textLabel?.text = item.text
+       
+        // ternary operator below
+        cell.accessoryType = item.accessory ? .checkmark : .none
         
         
         return cell
@@ -62,16 +82,20 @@ class TheDoListViewController: UITableViewController {
     
         tableView.deselectRow(at: indexPath, animated: true)
         
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        }
-        else {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
+        itemArray[indexPath.row].accessory = !itemArray[indexPath.row].accessory
+    
+        
+        tableView.reloadData()
+        
+        
+        
+        
+       
     }
-
-
-
-
 }
+
+
+
+
+
 
