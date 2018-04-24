@@ -7,19 +7,30 @@
 //
 
 import UIKit
+import CoreData
 
 class TheDoListViewController: UITableViewController {
     
-//    let defaults = UserDefaults.standard
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("items.plist")
-    
+
     
     var itemArray = [ToDoItem]()
+    
+    var selectedCategory : Category? {
+        didSet {
+            loadItems()
+        }
+    }
+    
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadData()
+        loadItems()
+        
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        
+       
         
 //        let item = ToDoItem()
 //        item.text = "Buy Molly"
@@ -46,8 +57,12 @@ class TheDoListViewController: UITableViewController {
         
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
             //What will happen when user clicks add button on Alert.
-            let newItem = ToDoItem()
+            
+            
+            let newItem = ToDoItem(context: self.context)
             newItem.text = textField.text!
+            newItem.accessory = false
+            newItem.parentCategory = self.selectedCategory
             
        self.itemArray.append(newItem)
    self.saveData()
@@ -67,7 +82,7 @@ class TheDoListViewController: UITableViewController {
        return itemArray.count
     }
     
-    //MARK - TableViewMethods
+    //MARK: - TableViewMethods
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell : UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "TheDoItemCell")!
         
@@ -90,30 +105,67 @@ class TheDoListViewController: UITableViewController {
    saveData()
     }
     
+    //MARK: - CoreData Methods
     func saveData() {
-        let encoder = PropertyListEncoder()
         do {
-            let data = try encoder.encode(itemArray)
-            try data.write(to: dataFilePath!)
-        }
-        catch {
-            print("Error encoding data, \(error)")
+            try context.save()
+        } catch {
+            print("Error saving context, \(error)")
         }
         tableView.reloadData()
     }
     
-    func loadData() {
+
+    
+    func loadItems(with request: NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest(), predicate: NSPredicate? = nil) {
         
-        if let data = try? Data(contentsOf: dataFilePath!) {
-            let decoder = PropertyListDecoder()
-            do{
-                itemArray = try decoder.decode([ToDoItem].self, from: data)
-            } catch { print("Error decoding data, \(error)")
-                
-            }
-        tableView.reloadData()}
+        let categoryPredicate = NSPredicate(format: "parentCategory.categoryName MATCHES %@", selectedCategory!.categoryName!)
+        
+        if let selectedPredicate = predicate {
+            let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, selectedPredicate])
+            request.predicate = compoundPredicate
+        } else {
+            request.predicate = categoryPredicate
+        }
+        
+        do {
+            itemArray = try context.fetch(request)
+        } catch {
+            print("Error fetching data. \(error)")
+        }
+        tableView.reloadData()
     }
     
+}
+
+//MARK: - SearchBar Methods
+extension TheDoListViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        print("SEARCH BAR HIT!!!")
+        
+        let predicate = NSPredicate(format: "text CONTAINS[cd] %@", searchBar.text!)
+        
+//        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        
+     
+        loadItems(predicate: predicate)
+        
+        
+    }
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+
+        } else {
+           let predicate = NSPredicate(format: "text CONTAINS[cd] %@", searchBar.text!)
+            loadItems(predicate: predicate)
+        }
+    }
 }
 
 

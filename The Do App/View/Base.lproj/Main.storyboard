@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--The Do App-->
+        <!--The Do Lists-->
         <scene sceneID="L1b-4k-aZU">
             <objects>
                 <tableViewController id="kzf-YJ-m3Z" customClass="TheDoListViewController" customModule="The_Do_App" customModuleProvider="target" sceneMemberID="viewController">
@@ -17,9 +17,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="iJE-DW-TlR">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <connections>
+                                <outlet property="delegate" destination="kzf-YJ-m3Z" id="eCb-7W-kgf"/>
+                            </connections>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TheDoItemCell" id="Kih-uU-8xg">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="72" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Kih-uU-8xg" id="AUr-r8-wPJ">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -32,7 +40,7 @@
                             <outlet property="delegate" destination="kzf-YJ-m3Z" id="Bje-N7-4TE"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="The Do App" id="fLg-Ru-bhm">
+                    <navigationItem key="navigationItem" title="The Do Lists" id="fLg-Ru-bhm">
                         <barButtonItem key="rightBarButtonItem" title="+" style="plain" id="R3n-iW-Mwz">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="9Mf-Mo-fpI">
                                 <rect key="frame" x="329" y="0.5" width="30" height="43"/>
@@ -50,7 +58,46 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RQK-JC-PWa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="692" y="148.87556221889056"/>
+            <point key="canvasLocation" x="1433" y="149"/>
+        </scene>
+        <!--The Do App-->
+        <scene sceneID="nVe-sc-peX">
+            <objects>
+                <tableViewController id="2zm-JC-yzq" customClass="CategoryTableViewController" customModule="The_Do_App" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="JFX-9J-e2B">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="categoryCell" id="e5G-Rb-7U0">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="e5G-Rb-7U0" id="GRT-mV-kIU">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="2zm-JC-yzq" id="R9V-wY-4Df"/>
+                            <outlet property="delegate" destination="2zm-JC-yzq" id="IE3-D3-TVu"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="The Do App" id="MHU-9u-X5S">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="J4a-U8-2tT">
+                            <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <connections>
+                                <action selector="addButtonPRessed:" destination="2zm-JC-yzq" id="3FV-lT-XKg"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <segue destination="kzf-YJ-m3Z" kind="show" identifier="goToItem" id="qBa-yy-ZHK"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fM9-5N-jKn" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="665" y="149"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="a5n-wr-52D">
@@ -64,12 +111,12 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="kzf-YJ-m3Z" kind="relationship" relationship="rootViewController" id="BKe-dr-IJb"/>
+                        <segue destination="2zm-JC-yzq" kind="relationship" relationship="rootViewController" id="d3x-hq-Lhv"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dEf-gd-Tap" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-50" y="149"/>
+            <point key="canvasLocation" x="-142" y="149"/>
         </scene>
     </scenes>
 </document>
